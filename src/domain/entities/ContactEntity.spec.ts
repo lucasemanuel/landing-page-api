@@ -1,10 +1,4 @@
-class ContactEntity {
-  constructor (
-    public readonly name: string,
-    public readonly email: string,
-    public readonly id: string
-  ) {}
-}
+import ContactEntity from './ContactEntity'
 
 describe('Contact Entity', () => {
   test('should contain correct name', () => {
