@@ -5,33 +5,44 @@ interface RegisterContactDTO {
   email: string
 }
 
+interface ContactRepository {
+  insert: (data: RegisterContactDTO) => Promise<ContactEntity>
+}
+
 class RegisterContactUseCase {
   constructor (private readonly contactRepository: ContactRepository) {}
 
-  public async execute (
-    data: RegisterContactDTO
-  ): Promise<ContactEntity | null> {
+  public async execute (data: RegisterContactDTO): Promise<ContactEntity> {
     const contact = await this.contactRepository.insert(data)
     return contact
   }
 }
 
-interface ContactRepository {
-  insert: (data: RegisterContactDTO) => Promise<ContactEntity>
-}
+const makeContactRepositorySpy = (): any => {
+  class ContactRepositorySpy implements ContactRepository {
+    public name: string
+    public email: string
 
-class ContactRepositorySpy implements ContactRepository {
-  public name: string
-  public email: string
-
-  public async insert (data: RegisterContactDTO): Promise<ContactEntity> {
-    Object.assign(this, data)
-    return new ContactEntity('any_name', 'any_email@email.com', 'any_id')
+    public async insert (data: RegisterContactDTO): Promise<ContactEntity> {
+      Object.assign(this, data)
+      return new ContactEntity('any_name', 'any_email@email.com', 'any_id')
+    }
   }
+
+  return new ContactRepositorySpy()
 }
 
+const makeContactRepositoryWithErrorSpy = (): any => {
+  class ContactRepositoryWithErrorSpy implements ContactRepository {
+    public async insert (data: RegisterContactDTO): Promise<ContactEntity> {
+      throw new Error()
+    }
+  }
+
+  return new ContactRepositoryWithErrorSpy()
+}
 const makeSut = (): any => {
-  const contactRepositorySpy = new ContactRepositorySpy()
+  const contactRepositorySpy = makeContactRepositorySpy()
   const sut = new RegisterContactUseCase(contactRepositorySpy)
   return {
     sut,
@@ -56,5 +67,14 @@ describe('Register Contact Use Case', () => {
       email: 'any_email@email.com'
     })
     expect(contact).toBeInstanceOf(ContactEntity)
+  })
+  test('should throw error if ContactRepository throw', async () => {
+    const contactRepositoryWithErrorSpy = makeContactRepositoryWithErrorSpy()
+    const sut = new RegisterContactUseCase(contactRepositoryWithErrorSpy)
+    const promise = sut.execute({
+      name: 'any_name',
+      email: 'any_email@email.com'
+    })
+    await expect(promise).rejects.toThrow()
   })
 })
