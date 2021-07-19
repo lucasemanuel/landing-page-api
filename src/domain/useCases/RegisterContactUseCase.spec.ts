@@ -1,22 +1,7 @@
 import ContactEntity from '../entities/ContactEntity'
-
-interface RegisterContactDTO {
-  name: string
-  email: string
-}
-
-interface ContactRepository {
-  insert: (data: RegisterContactDTO) => Promise<ContactEntity>
-}
-
-class RegisterContactUseCase {
-  constructor (private readonly contactRepository: ContactRepository) {}
-
-  public async execute (data: RegisterContactDTO): Promise<ContactEntity> {
-    const contact = await this.contactRepository.insert(data)
-    return contact
-  }
-}
+import ContactRepository from '../repositories/ContactRepository'
+import RegisterContactDTO from '../dtos/RegisterContactDTO'
+import RegisterContactUseCase from './RegisterContactUseCase'
 
 const makeContactRepositorySpy = (): any => {
   class ContactRepositorySpy implements ContactRepository {
