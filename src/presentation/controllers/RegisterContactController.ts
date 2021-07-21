@@ -1,5 +1,9 @@
 import GetContactByEmailUseCase from '../../domain/useCases/GetContactByEmailUseCase'
+import HttpRequest from '../helpers/HttpRequest'
+import HttpResponse from '../helpers/HttpResponse'
+import MissingParamError from '../../helpers/errors/MissingParamError'
 import RegisterContactUseCase from '../../domain/useCases/RegisterContactUseCase'
+import { BadRequest, Created } from '../helpers/responses'
 
 class RegisterContactController {
   constructor (
@@ -12,26 +16,19 @@ class RegisterContactController {
   ): Promise<HttpResponse> {
     const { name, email } = request.body
     if (name.length !== 0) {
-      return badRequest(new MissingParamError('name').message)
+      return BadRequest(new MissingParamError('name').message)
     }
     if (email.length !== 0) {
-      return badRequest(new MissingParamError('email').message)
+      return BadRequest(new MissingParamError('email').message)
     }
 
     let contact = await this.getContactByEmailUseCase.execute(email)
     if (contact !== null) {
       contact = await this.registerContactUseCase.execute(contact)
-      return created(contact)
+      return Created(contact)
     }
 
-    return badRequest('This email has already been registered.')
-  }
-}
-
-class MissingParamError extends Error {
-  constructor (param: string) {
-    super(`Missing param: ${param}`)
-    this.name = 'MissingParamError'
+    return BadRequest('This email has already been registered.')
   }
 }
 
@@ -41,33 +38,6 @@ interface HttpRequestRegisterContact extends HttpRequest {
     email: string
   }
   statusCode: number
-}
-
-const badRequest = (message: string): HttpResponse => {
-  return {
-    body: {
-      message
-    },
-    statusCode: 400
-  }
-}
-
-const created = (content: object | undefined = undefined): HttpResponse => {
-  return {
-    body: {
-      content
-    },
-    statusCode: 201
-  }
-}
-
-interface HttpResponse {
-  body?: object
-  statusCode: number
-}
-
-interface HttpRequest {
-  body: object
 }
 
 export default RegisterContactController
