@@ -1,8 +1,7 @@
 import ContactEntity from '../entities/ContactEntity'
-import RegisterContactDTO from '../dtos/RegisterContactDTO'
 
 interface ContactRepository {
-  insert: (data: RegisterContactDTO) => Promise<ContactEntity>
+  insert: (contact: ContactEntity) => Promise<ContactEntity>
 }
 
 export default ContactRepository
