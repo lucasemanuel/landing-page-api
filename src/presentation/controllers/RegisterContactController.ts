@@ -11,9 +11,7 @@ class RegisterContactController {
     private readonly getContactByEmailUseCase: GetContactByEmailUseCase
   ) {}
 
-  public async route (
-    request: HttpRequestRegisterContact
-  ): Promise<HttpResponse> {
+  public async route (request: HttpRequestExtends): Promise<HttpResponse> {
     const { name, email } = request.body
     if (name.length !== 0) {
       return BadRequest(new MissingParamError('name').message)
@@ -32,12 +30,11 @@ class RegisterContactController {
   }
 }
 
-interface HttpRequestRegisterContact extends HttpRequest {
+interface HttpRequestExtends extends HttpRequest {
   body: {
     name: string
     email: string
   }
-  statusCode: number
 }
 
 export default RegisterContactController
