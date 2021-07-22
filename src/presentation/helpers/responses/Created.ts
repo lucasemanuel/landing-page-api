@@ -1,10 +1,8 @@
 import HttpResponse from '../HttpResponse'
 
-const Created = (content: object | undefined = undefined): HttpResponse => {
+const Created = (body: object | undefined = undefined): HttpResponse => {
   return {
-    body: {
-      content
-    },
+    body,
     statusCode: 201
   }
 }
