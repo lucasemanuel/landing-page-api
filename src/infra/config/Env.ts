@@ -1,8 +1,12 @@
 import 'dotenv/config'
 import yn from 'yn'
 
-export const MONGO_URI = process.env.MONGO_URI ?? ''
-export const PORT = process.env.PORT ?? 0
+export const PORT = parseInt(process.env.PORT ?? '0')
+
+export const MONGO_PORT = parseInt(process.env.MONGO_PORT ?? '0')
+export const MONGO_HOST = process.env.MONGO_HOST ?? ''
+export const MONGO_USER = process.env.MONGO_USER ?? ''
+export const MONGO_PASSWORD = process.env.MONGO_PASSWORD ?? ''
 
 export const MAIL_HOST = process.env.MAIL_HOST ?? ''
 export const MAIL_PORT = parseInt(process.env.MAIL_PORT ?? '0')
