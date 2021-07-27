@@ -12,3 +12,6 @@ export const MAIL_PASSWORD = process.env.MAIL_PASSWORD ?? ''
 
 export const MAIL_FROM_NAME = process.env.MAIL_FROM ?? ''
 export const MAIL_FROM_EMAIL = process.env.MAIL_FROM_EMAIL ?? ''
+
+export const REDIS_PORT = parseInt(process.env.REDIS_PORT ?? '0')
+export const REDIS_HOST = process.env.REDIS_HOST ?? ''
